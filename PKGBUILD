@@ -12,13 +12,13 @@ source=("git://github.com/marvinkreis/${pkgname}.git")
 md5sums=("SKIP")
 
 build() {
-    cd "$srcdir/rofi-plugins"
-    autoreconf -i
+    cd "${srcdir}/${pkgname}"
+    autoreconf --install
     ./configure
     make
 }
 
 package() {
-    cd "$srcdir/rofi-plugins"
+    cd "${srcdir}/${pkgname}"
     make DESTDIR="$pkgdir" PREFIX=/usr install
 }

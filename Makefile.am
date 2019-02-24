@@ -1,11 +1,11 @@
 ACLOCAL_AMFLAGS=-I m4
 plugindir=@rofi_PLUGIN_INSTALL_DIR@
 
-plugin_LTLIBRARIES = dict.la
+plugin_LTLIBRARIES = jsondict.la
 
-dict_la_SOURCES=\
-		 src/dict.c
+jsondict_la_SOURCES=\
+		 src/jsondict.c
 
-dict_la_CFLAGS= @glib_CFLAGS@ @rofi_CFLAGS@ @jsonc_CFLAGS@
-dict_la_LIBADD= @glib_LIBS@ @rofi_LIBS@ @jsonc_LIBS@
-dict_la_LDFLAGS= -module -avoid-version
+jsondict_la_CFLAGS= @glib_CFLAGS@ @rofi_CFLAGS@ @jsonc_CFLAGS@
+jsondict_la_LIBADD= @glib_LIBS@ @rofi_LIBS@ @jsonc_LIBS@
+jsondict_la_LDFLAGS= -module -avoid-version

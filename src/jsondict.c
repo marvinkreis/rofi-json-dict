@@ -578,8 +578,8 @@ static gint levenshtein_compare ( gconstpointer a, gconstpointer b, gpointer sea
 
 Mode mode = {
     .abi_version        = ABI_VERSION,
-    .name               = "dict",
-    .cfg_name_key       = "display-dict",
+    .name               = "json-dict",
+    .cfg_name_key       = "display-json-dict",
     ._init              = dict_init,
     ._destroy           = dict_destroy,
     ._get_num_entries   = dict_get_num_entries,
