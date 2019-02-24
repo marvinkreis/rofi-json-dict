@@ -1,24 +1,31 @@
-pkgname=rofi-json-dict
+# Maintainer: Marvin Kreis <MarvinKreis@web.de>
+
+pkgname=rofi-json-dict-git
 pkgver=0.0.2
 pkgrel=1
-pkgdesc="Plugin to use rofi as a dictionary"
-url="https://github.com/marvinkreis/${pkgname}"
-arch=("i686" "x86_64")
+pkgdesc="A plugin to use rofi as a dictionary"
+arch=("x86_64")
+url="https://github.com/marvinkreis/${pkgname%-git}"
 license=("MIT")
 depends=("rofi")
 makedepends=("git")
-
-source=("git://github.com/marvinkreis/${pkgname}.git")
+provides=("rofi-json-dict")
+replaces=("rofi-dict")
+source=("git+https://github.com/marvinkreis/${pkgname%-git}.git")
 md5sums=("SKIP")
 
+pkgver() {
+    printf "%s" "$(git describe --long | sed 's/\([^-]*-\)g/r\1/;s/-/./g')"
+}
+
 build() {
-    cd "${srcdir}/${pkgname}"
+    cd "${srcdir}/${pkgname%-git}"
     autoreconf --install
-    ./configure
+    ./configure --prefix=/usr
     make
 }
 
 package() {
-    cd "${srcdir}/${pkgname}"
-    make DESTDIR="$pkgdir" PREFIX=/usr install
+    cd "${srcdir}/${pkgname%-git}"
+    make DESTDIR="${pkgdir}" PREFIX=/usr install
 }
