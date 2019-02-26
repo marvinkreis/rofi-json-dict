@@ -1,60 +1,3 @@
-/**
- * rofi-dict
- *
- * MIT/X11 License
- * Copyright (c) 2018 Marvin Kreis <MarvinKreis@web.de>
- *
- * Permission is hereby granted, free of charge, to any person obtaining
- * a copy of this software and associated documentation files (the
- * "Software"), to deal in the Software without restriction, including
- * without limitation the rights to use, copy, modify, merge, publish,
- * distribute, sublicense, and/or sell copies of the Software, and to
- * permit persons to whom the Software is furnished to do so, subject to
- * the following conditions:
- *
- * The above copyright notice and this permission notice shall be
- * included in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
- * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
- * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
- * CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
- * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
-
-// ================================================================================================================= //
-
-/*
- * Reads all json-files in a directory as dictionaries and lets the user query values by keys.
- * Dictionaries must be saved as utf-8 and have the following structure:
- *      {
- *        "key1": "value1",
- *        "key2": "value2",
- *        "key3": "value3"
- *      }
- *
- * Supports three matching modes:
- *      exact matching
- *      substring matching
- *      Levenshtein distance matching
- *
- *
- * Key Bindings:
- * ------------
- * kb-mode-next     (default: Shift+Right)    | Switch to the next matching mode. Switch to the next rofi-mode if the last matching mode is already selected.
- * kb-mode-previous (default: Shift+Left)     | Switch to the previous matching mode. Switch to the previous rofi-mode if the first matching mode is already selected.
- * kb-accept-custom (default: Control+Return) | Switch to the next matching mode (only if the input is empty).
- *
- * Command line options:
- * ---------------------
- * -dict_path '/path/to/directory'     Sets the directory containing the dictionaries.
- * -dict_mode <0|1|2>                  Sets the matching mode.
- */
-
-// ================================================================================================================= //
-
 #define _GNU_SOURCE
 
 #include <stdlib.h>
@@ -72,11 +15,11 @@
 
 // ================================================================================================================= //
 
-/* The dictionary path. The default path is XDG_DATA_HOME/dicts/json
+/* The dictionary path. The default path is XDG_DATA_HOME/rofi-json-dicts
    The path ist free'd using g_free() afterwards, therefore g_strdup(PATH) should be used for plain strings.
    g_get_user_data_dir() can be used to get the home directory.
-   Alternatively, the path can be set with the -dict_path command line option. */
-#define DICTIONARY_PATH g_build_filename(g_get_user_data_dir(), "dicts", "json", NULL)
+   Alternatively, the path can be set with the -dict-path command line option. */
+#define DICTIONARY_PATH g_build_filename(g_get_user_data_dir(), "rofi-json-dicts", NULL)
 
 /* The default matching mode.
    Possible modes are:
@@ -159,7 +102,7 @@ typedef struct {
     char* search;
     /* Current matching mode. */
     match_mode cur_match_mode;
-} DictModePrivateData;
+} JsonDictModePrivateData;
 
 // ================================================================================================================= //
 
@@ -215,11 +158,11 @@ static gint substring_compare ( gconstpointer a, gconstpointer b, gpointer searc
 
 // ================================================================================================================= //
 
-static int dict_init ( Mode* sw )
+static int json_dict_init ( Mode* sw )
 {
     if ( mode_get_private_data ( sw ) == NULL ) {
 
-        DictModePrivateData* pd = g_malloc0 ( sizeof ( DictModePrivateData ) );
+        JsonDictModePrivateData* pd = g_malloc0 ( sizeof ( JsonDictModePrivateData ) );
         mode_set_private_data ( sw, ( void * ) pd );
 
         /* Get the matching mode. */
@@ -266,9 +209,9 @@ static int dict_init ( Mode* sw )
     return true;
 }
 
-static void dict_destroy ( Mode* sw )
+static void json_dict_destroy ( Mode* sw )
 {
-    DictModePrivateData* pd = ( DictModePrivateData * ) mode_get_private_data ( sw );
+    JsonDictModePrivateData* pd = ( JsonDictModePrivateData * ) mode_get_private_data ( sw );
     mode_set_private_data ( sw, NULL );
 
     if ( pd != NULL ) {
@@ -296,9 +239,9 @@ static void dict_destroy ( Mode* sw )
     }
 }
 
-static unsigned int dict_get_num_entries ( const Mode* sw )
+static unsigned int json_dict_get_num_entries ( const Mode* sw )
 {
-    const DictModePrivateData* pd = ( const DictModePrivateData * ) mode_get_private_data ( sw );
+    const JsonDictModePrivateData* pd = ( const JsonDictModePrivateData * ) mode_get_private_data ( sw );
 
     if ( pd != NULL ) {
         return pd->num_results;
@@ -307,9 +250,9 @@ static unsigned int dict_get_num_entries ( const Mode* sw )
     }
 }
 
-static ModeMode dict_result ( Mode* sw, int mretv, char** input, unsigned int selected_line )
+static ModeMode json_dict_result ( Mode* sw, int mretv, char** input, unsigned int selected_line )
 {
-    DictModePrivateData* pd = ( DictModePrivateData * ) mode_get_private_data ( sw );
+    JsonDictModePrivateData* pd = ( JsonDictModePrivateData * ) mode_get_private_data ( sw );
 
     ModeMode retv = RELOAD_DIALOG;
 
@@ -357,9 +300,9 @@ static ModeMode dict_result ( Mode* sw, int mretv, char** input, unsigned int se
     return retv;
 }
 
-static int dict_token_match ( const Mode* sw, rofi_int_matcher** tokens, unsigned int index )
+static int json_dict_token_match ( const Mode* sw, rofi_int_matcher** tokens, unsigned int index )
 {
-    const DictModePrivateData* pd = ( const DictModePrivateData * ) mode_get_private_data ( sw );
+    const JsonDictModePrivateData* pd = ( const JsonDictModePrivateData * ) mode_get_private_data ( sw );
 
 #if KEEP_ALL_RESULTS
     return true;
@@ -368,7 +311,7 @@ static int dict_token_match ( const Mode* sw, rofi_int_matcher** tokens, unsigne
 #endif
 }
 
-static char* dict_get_display_value ( const Mode* sw, unsigned int selected_line, int* state,
+static char* json_dict_get_display_value ( const Mode* sw, unsigned int selected_line, int* state,
         GList** attr_list, int get_entry )
 {
     if ( !get_entry ) return NULL;
@@ -376,7 +319,7 @@ static char* dict_get_display_value ( const Mode* sw, unsigned int selected_line
     // MARKUP flag, not defined in accessible headers
     *state |= 8;
 
-    const DictModePrivateData* pd = ( const DictModePrivateData * ) mode_get_private_data ( sw );
+    const JsonDictModePrivateData* pd = ( const JsonDictModePrivateData * ) mode_get_private_data ( sw );
 
     Result* result = NULL;
     result = &( pd->results[selected_line] );
@@ -412,9 +355,9 @@ static char* dict_get_display_value ( const Mode* sw, unsigned int selected_line
     return format_str;
 }
 
-static char* dict_get_message ( const Mode *sw )
+static char* json_dict_get_message ( const Mode *sw )
 {
-    const DictModePrivateData* pd = ( const DictModePrivateData * ) mode_get_private_data ( sw );
+    const JsonDictModePrivateData* pd = ( const JsonDictModePrivateData * ) mode_get_private_data ( sw );
 
     static char* mode_symbols[3] = { EXACT_MATCH_SYMBOL, SUBSTRING_MATCH_SYMBOL, LEVENSHTEIN_MATCH_SYMBOL };
 
@@ -426,7 +369,7 @@ static char* dict_get_message ( const Mode *sw )
 
 bool set_dict_files ( const char* dir_name, Mode* sw )
 {
-    DictModePrivateData* pd = ( DictModePrivateData * ) mode_get_private_data ( sw );
+    JsonDictModePrivateData* pd = ( JsonDictModePrivateData * ) mode_get_private_data ( sw );
 
     DIR* dir;
     struct dirent *entry;
@@ -453,7 +396,7 @@ bool set_dict_files ( const char* dir_name, Mode* sw )
 
 void set_json_dicts ( const char* dir_name, Mode* sw )
 {
-    DictModePrivateData* pd = ( DictModePrivateData * ) mode_get_private_data ( sw );
+    JsonDictModePrivateData* pd = ( JsonDictModePrivateData * ) mode_get_private_data ( sw );
 
     pd->json_dicts = g_malloc0 ( pd->num_dicts * sizeof ( json_object* ) );
 
@@ -485,7 +428,7 @@ void set_json_dicts ( const char* dir_name, Mode* sw )
 
 void set_results ( const char* search, Mode* sw )
 {
-    DictModePrivateData* pd = ( DictModePrivateData * ) mode_get_private_data ( sw );
+    JsonDictModePrivateData* pd = ( JsonDictModePrivateData * ) mode_get_private_data ( sw );
 
     /* Clear previous results. */
     pd->num_results = 0;
@@ -580,17 +523,17 @@ Mode mode = {
     .abi_version        = ABI_VERSION,
     .name               = "json-dict",
     .cfg_name_key       = "display-json-dict",
-    ._init              = dict_init,
-    ._destroy           = dict_destroy,
-    ._get_num_entries   = dict_get_num_entries,
-    ._result            = dict_result,
-    ._token_match       = dict_token_match,
-    ._get_display_value = dict_get_display_value,
+    ._init              = json_dict_init,
+    ._destroy           = json_dict_destroy,
+    ._get_num_entries   = json_dict_get_num_entries,
+    ._result            = json_dict_result,
+    ._token_match       = json_dict_token_match,
+    ._get_display_value = json_dict_get_display_value,
     ._get_icon          = NULL,
     ._get_completion    = NULL,
     ._preprocess_input  = NULL,
 #if USE_MESSAGE
-    ._get_message       = dict_get_message,
+    ._get_message       = json_dict_get_message,
 #else
     ._get_message       = NULL,
 #endif
