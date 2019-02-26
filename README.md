@@ -24,7 +24,7 @@ The `convert-dict` python script can be used to convert [FreeDict dictionaries](
 
 This plugin supports three matching modes:
 
-#   | Mode                 | Description
+\#  | Mode                 | Description
 --- | -------------------- | -----------
 0   | exact                | match if the key matches the search string exactly
 1   | substring            | match if the key contains the search string
@@ -43,11 +43,9 @@ Key                                                  | Action
 Option            | Arguments            | Description
 ----------------- | -------------------- | -----------
 `-json-dict-path` | `/path/to/directory` | Sets the dictionary directory (default: `XDG_DATA_HOME/rofi-json-dicts`).
-`-json-dict-mode` |  `[0 | 1 | 2]`       | Sets the matching mode (default: 0).
+`-json-dict-mode` |  `[0 \| 1 \| 2]`     | Sets the matching mode (default: 0).
 
 The source file contains more configuration via `#define`.
-
-
 
 ## Compilation
 
