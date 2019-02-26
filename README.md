@@ -1,4 +1,3 @@
-
 ## Description
 
 Reads all JSON files in a directory (default: `XDG_DATA_HOME/rofi-json-dicts`) as dictionaries and lets the user query translations.
@@ -40,10 +39,10 @@ Key                                                  | Action
 
 ### Command line options / Configuration
 
-Option            | Arguments            | Description
------------------ | -------------------- | -----------
-`-json-dict-path` | `/path/to/directory` | Sets the dictionary directory (default: `XDG_DATA_HOME/rofi-json-dicts`).
-`-json-dict-mode` |  `[0 \| 1 \| 2]`     | Sets the matching mode (default: 0).
+Option                      | Description
+--------------------------- | -----------
+`-json-dict-path <path>`    | Sets the dictionary directory (default: `XDG_DATA_HOME/rofi-json-dicts`).
+`-json-dict-mode <0\|1\|2>` | Sets the matching mode (default: 0).
 
 The source file contains more configuration via `#define`.
 
