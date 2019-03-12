@@ -167,7 +167,7 @@ static int json_dict_init ( Mode* sw )
 
         /* Get the matching mode. */
         unsigned int match_mode;
-        if ( find_arg_uint ( "-dict_mode", &match_mode ) && match_mode <= 2 ) {
+        if ( find_arg_uint ( "-json-dict-mode", &match_mode ) && match_mode <= 2 ) {
             pd->cur_match_mode = match_mode;
         } else {
             pd->cur_match_mode = DEFAULT_MATCHING_MODE;
@@ -175,7 +175,7 @@ static int json_dict_init ( Mode* sw )
 
         /* Get the directory containing the dictionaries. */
         char* dir_name = NULL;
-        if ( find_arg_str ( "-dict_path", &dir_name ) ) {
+        if ( find_arg_str ( "-json-dict-path", &dir_name ) ) {
             dir_name = g_strdup ( dir_name );
         } else {
             dir_name = DICTIONARY_PATH;
@@ -376,7 +376,7 @@ bool set_dict_files ( const char* dir_name, Mode* sw )
 
     dir = opendir ( dir_name );
     if ( dir == NULL ) {
-        fprintf ( stderr, "[dict] Could not open directory: %s\n", dir_name );
+        fprintf ( stderr, "[json-dict] Could not open directory: %s\n", dir_name );
         return false;
     }
 
@@ -405,14 +405,14 @@ void set_json_dicts ( const char* dir_name, Mode* sw )
         char* file_content = NULL;
 
         if ( !g_file_get_contents ( file_name, &file_content, NULL, NULL ) ) {
-            fprintf ( stderr, "[dict] Could not read file: %s\n", pd->dict_names[i] );
+            fprintf ( stderr, "[json-dict] Could not read file: %s\n", pd->dict_names[i] );
             continue;
         }
 
         enum json_tokener_error error;
         json_object *dict = json_tokener_parse_verbose ( file_content, &error );
         if ( error != json_tokener_success ) {
-            fprintf ( stderr, "[dict] Could parse json file: %s\n", pd->dict_names[i] );
+            fprintf ( stderr, "[json-dict] Could parse json file: %s\n", pd->dict_names[i] );
             continue;
         }
         pd->json_dicts[i] = dict;

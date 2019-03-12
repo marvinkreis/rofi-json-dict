@@ -17,7 +17,8 @@ Dictionaries have the following structure:
 ```
 They must be saved in UTF-8 with the `.json` file extension.
 
-The `convert-dict` python script can be used to convert [FreeDict dictionaries](https://github.com/freedict/fd-dictionaries) into the JSON format.
+The `convert-dict` python script can be used to convert [FreeDict dictionaries](https://github.com/freedict/fd-dictionaries) into the JSON format. <br>
+Usage: `convert-dict input.tei output.json`.
 
 ### Matching modes
 
@@ -37,7 +38,7 @@ Key                                                  | Action
 `kb-mode-previous` <br/> (default: `Shift+Left`)     | Switch to the previous matching mode. <br/> Switch to the previous rofi-mode if the first matching mode is already selected.
 `kb-accept-custom` <br/> (default: `Control+Return`) | Switch to the next matching mode (only if the input is empty).
 
-### Command line options / Configuration
+## Command line options / Configuration
 
 Option                      | Description
 --------------------------- | -----------
@@ -45,6 +46,17 @@ Option                      | Description
 `-json-dict-mode <0\|1\|2>` | Sets the matching mode (default: 0).
 
 The source file contains more configuration via `#define`.
+
+### Example configuration
+
+```
+$ ls ${HOME}/.local/share/rofi-json-dicts
+deu-eng.json
+eng-deu.json
+eng-fra.json
+
+rofi -modi json-dict -show json-dict -json-dict-path "${HOME}/.local/share/rofi-json-dicts" -json-dict-mode 0
+```
 
 ## Compilation
 
