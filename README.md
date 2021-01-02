@@ -62,18 +62,17 @@ rofi -modi json-dict -show json-dict -json-dict-path "${HOME}/.local/share/rofi-
 
 ### Dependencies
 
-| Dependency | Version |
-| ---------- | ------- |
-| rofi       | 1.4     |
-| json-c     | 0.13    |
+Dependency | Version
+---------- | -------
+rofi       | 1.6
+json-c     | 0.13
 
 ### Installation
 
-Use the following steps to compile the plugin with the **autotools** build system:
+Use the following steps to compile the plugin with **CMake**:
 
 ```bash
-autoreconf -i
-./configure
+cmake .
 make
-make install
+make install # optional: install the plugin
 ```
