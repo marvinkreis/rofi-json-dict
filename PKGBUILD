@@ -21,8 +21,7 @@ pkgver() {
 
 build() {
     cd "${srcdir}/${pkgname%-git}"
-    autoreconf --install
-    ./configure --prefix=/usr
+    cmake .
     make
 }
 
